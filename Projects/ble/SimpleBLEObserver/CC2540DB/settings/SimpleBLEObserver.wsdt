@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>SimpleBLEObserver/CC2540EM</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>243</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1215</ColumnWidth1><ColumnWidth2>324</ColumnWidth2><ColumnWidth3>81</ColumnWidth3></Build>
+    <TerminalIO/><Find-in-Files><ColumnWidth0>580</ColumnWidth0><ColumnWidth1>82</ColumnWidth1><ColumnWidth2>994</ColumnWidth2></Find-in-Files></Static>
+    <Windows>
+      
+      
+    <Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-6247-4821</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>SimpleBLEObserver</ExpandedNode><ExpandedNode>SimpleBLEObserver/APP</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-3633-4870</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-3633-6778</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>1</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\..\..\Program Files\IAR Systems\Embedded Workbench 6.5\8051\doc\infocenter\index.ENU.html</Filename></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\simpleBLEObserver.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>213</YPos2><SelStart2>8388</SelStart2><SelEnd2>8388</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\common\cc2540\OnBoard.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>177</YPos2><SelStart2>6341</SelStart2><SelEnd2>6341</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\simpleBLEObserver_Main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>43</YPos2><SelStart2>3458</SelStart2><SelEnd2>3458</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\include\bcomdef.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>74</YPos2><SelStart2>5016</SelStart2><SelEnd2>5016</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\include\gap.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>362</YPos2><SelStart2>24497</SelStart2><SelEnd2>24497</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\OSAL_SimpleBLEObserver.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>30</YPos2><SelStart2>916</SelStart2><SelEnd2>916</SelEnd2></Tab><ActiveTab>6</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-013c9e08><key>iaridepm.enu1</key></Toolbar-013c9e08></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>540</Bottom><Right>317</Right><x>-2</x><y>-2</y><xscreen>211</xscreen><yscreen>274</yscreen><sizeHorzCX>132538</sizeHorzCX><sizeHorzCY>345523</sizeHorzCY><sizeVertCX>200377</sizeVertCX><sizeVertCY>683480</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>208</Bottom><Right>1594</Right><x>-2</x><y>-2</y><xscreen>1596</xscreen><yscreen>210</yscreen><sizeHorzCX>1002513</sizeHorzCX><sizeHorzCY>264817</sizeHorzCY><sizeVertCX>132538</sizeVertCX><sizeVertCY>345523</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

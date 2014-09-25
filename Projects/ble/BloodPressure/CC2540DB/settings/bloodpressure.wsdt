@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>bloodpressure/CC2540DK-MINI Keyfob Slave</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>218</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+    <Find-All-References><ColumnWidth0>580</ColumnWidth0><ColumnWidth1>82</ColumnWidth1><ColumnWidth2>994</ColumnWidth2></Find-All-References><Find-in-Files><ColumnWidth0>549</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>942</ColumnWidth2></Find-in-Files><Build><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1149</ColumnWidth1><ColumnWidth2>306</ColumnWidth2><ColumnWidth3>76</ColumnWidth3></Build><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1533</ColumnWidth1></Debug-Log><TerminalIO/></Static>
+    <Windows>
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-3995-21202</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>bloodpressure</ExpandedNode><ExpandedNode>bloodpressure/APP</ExpandedNode><ExpandedNode>bloodpressure/PROFILES</ExpandedNode><ExpandedNode>bloodpressure/PROFILES/bpservice.c</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-27478-22194</Identity><TabName>Find All References</TabName><Factory>Find-All-References</Factory><Session/></Tab><Tab><Identity>TabID-846-15421</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-11891-3324</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-30763-13819</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs><SelectedTab>2</SelectedTab></Wnd1></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\Profiles\BloodPressure\bpservice.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>411</YPos2><SelStart2>14514</SelStart2><SelEnd2>14514</SelEnd2></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\Profiles\Roles\peripheral.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>55</YPos2><SelStart2>6499</SelStart2><SelEnd2>6505</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\host\gatt_uuid.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>81</YPos2><SelStart2>3496</SelStart2><SelEnd2>3496</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\include\gatt_uuid.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>60</YPos2><SelStart2>3166</SelStart2><SelEnd2>3166</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\include\gatt_profile_uuid.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>57</YPos2><SelStart2>3851</SelStart2><SelEnd2>3851</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\include\gattservapp.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>118</YPos2><SelStart2>6668</SelStart2><SelEnd2>6668</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\include\gatt.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>88</YPos2><SelStart2>4298</SelStart2><SelEnd2>4298</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\ble\include\att.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>97</YPos2><SelStart2>5665</SelStart2><SelEnd2>5665</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-013c9d18><key>iaridepm.enu1</key></Toolbar-013c9d18></Sizes></Row0><Row1><Sizes><Toolbar-0a5738f8><key>debuggergui.enu1</key></Toolbar-0a5738f8></Sizes></Row1></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>711</Bottom><Right>309</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>125628</sizeHorzCX><sizeHorzCY>213904</sizeHorzCY><sizeVertCX>195352</sizeVertCX><sizeVertCY>762567</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>155</Bottom><Right>1594</Right><x>-2</x><y>-2</y><xscreen>1596</xscreen><yscreen>157</yscreen><sizeHorzCX>1002513</sizeHorzCX><sizeHorzCY>167914</sizeHorzCY><sizeVertCX>125628</sizeVertCX><sizeVertCY>213904</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
