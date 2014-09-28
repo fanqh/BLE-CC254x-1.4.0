@@ -95,6 +95,10 @@ extern void Hal_ProcessPoll (void);
  */
 extern void HalDriverInit (void);
 
+
+
+
+
 #ifdef __cplusplus
 }
 #endif

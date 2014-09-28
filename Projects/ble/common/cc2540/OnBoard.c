@@ -94,6 +94,12 @@ extern uint8 LL_PseudoRand( uint8 *randData, uint8 dataLen );
 void appForceBoot(void);
 #endif
 
+
+
+hal_state_t hal_state;
+
+
+
 /*********************************************************************
  * LOCAL VARIABLES
  */
@@ -338,6 +344,38 @@ void appForceBoot(void)
 {
   // Dummy function for HCI library that cannot depend on the SBL build defines.
 }
+
+
+static void disablepower(void)
+{
+    P0_6 = 0;
+}
+
+static void enablepower(void)
+{
+    P0_6 = 1;
+}
+
+void hal_initialising_state_enter(void) 
+{	
+  
+  hal_state = initialising;
+	/** floating, if user release button and power cable unplugged, system stop **/
+	disablepower();	
+}
+
+void HalGpioInit(void)
+{
+    /*MUC POWER PIN ,MOTO PIN, SW_DETECT PIN, USB SW_DETECT,BLUE LED PIN , SW_SCAN PIN TO GPIO */
+    P0SEL = (~BV(6)) & (~BV(5)) & (~BV(4)) & (~BV(1)) &(~BV(0));    
+    /*SET GPIO AS OUTPUT*/
+    P0DIR |= BV(6) | BV(5) | (BV(1)) ;
+    
+    /*SET GPIO AS INPUT*/
+    P0DIR &= ~BV(4) & ~BV(0);
+    
+}
+
 #endif
 
 /*********************************************************************

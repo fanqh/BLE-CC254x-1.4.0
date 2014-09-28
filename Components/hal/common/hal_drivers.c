@@ -72,13 +72,17 @@
 #if (defined HAL_SPI) && (HAL_SPI == TRUE)
 #include "hal_spi.h"
 #endif
+   
+#include "Onboard.h"
 
 /**************************************************************************************************
  *                                      GLOBAL VARIABLES
  **************************************************************************************************/
 uint8 Hal_TaskID;
-
+   
 extern void HalLedUpdate( void ); /* Notes: This for internal only so it shouldn't be in hal_led.h */
+
+
 
 /**************************************************************************************************
  * @fn      Hal_Init
@@ -97,6 +101,8 @@ void Hal_Init( uint8 task_id )
 #ifdef CC2591_COMPRESSION_WORKAROUND
   osal_start_reload_timer( Hal_TaskID, PERIOD_RSSI_RESET_EVT, PERIOD_RSSI_RESET_TIMEOUT );
 #endif
+  
+ 
 }
 
 /**************************************************************************************************
@@ -159,6 +165,11 @@ void HalDriverInit (void)
 #if (defined HAL_HID) && (HAL_HID == TRUE)
   usbHidInit();
 #endif
+  
+  HalGpioInit();
+  
+  
+  hal_initialising_state_enter();
 }
 
 /**************************************************************************************************
@@ -177,6 +188,7 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
 
   (void)task_id;  // Intentionally unreferenced parameter
 
+  
   if ( events & SYS_EVENT_MSG )
   {
     msgPtr = osal_msg_receive(Hal_TaskID);
@@ -217,6 +229,26 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
     return events ^ HAL_LED_BLINK_EVENT;
   }
 
+switch(hal_state)
+{
+    case initialising:
+      
+      break;
+        
+}  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   if (events & HAL_KEY_EVENT)
   {
 #if (defined HAL_KEY) && (HAL_KEY == TRUE)
@@ -291,6 +323,9 @@ void Hal_ProcessPoll ()
 #endif
  
 }
+
+
+
 
 /**************************************************************************************************
 **************************************************************************************************/

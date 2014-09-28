@@ -140,6 +140,16 @@ extern void _itoa(uint16 num, uint8 *buf, uint8 radix);
 /* used by MTEL.c */
 uint8 OnBoard_SendKeys( uint8 keys, uint8 state );
 
+
+
+
+typedef enum 
+{
+    initialising,
+    activng,
+    active,
+    deactive
+}hal_state_t;
 /*
  * Board specific random number generator
  */
@@ -179,7 +189,11 @@ extern void OnBoard_KeyCallback ( uint8 keys, uint8 state );
  */
 extern __near_func void Onboard_soft_reset( void );
 
-
+extern hal_state_t hal_state;
+void HalGpioInit(void);
+void disablepower(void);
+void enablepower(void);
+void hal_initialising_state_enter(void); 
 /*********************************************************************
  */
 

@@ -810,7 +810,7 @@ uint16 GAPRole_ProcessEvent( uint8 task_id, uint16 events )
     return ( events ^ START_CONN_UPDATE_EVT );
   }
   
-  if ( events & CONN_PARAM_TIMEOUT_EVT )
+   if ( events & CONN_PARAM_TIMEOUT_EVT )
   {
     // Unsuccessful in updating connection parameters
     gapRole_HandleParamUpdateNoSuccess();
