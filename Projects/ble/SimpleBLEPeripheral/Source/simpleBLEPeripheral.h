@@ -45,6 +45,14 @@ extern "C"
 {
 #endif
 
+  
+  
+/*********************************************************************
+ * EXTERN
+ */
+  
+extern uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
+
 /*********************************************************************
  * INCLUDES
  */

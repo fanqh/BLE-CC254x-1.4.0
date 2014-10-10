@@ -49,6 +49,7 @@
 
 #include "hal_led.h"
 #include "hal_key.h"
+#include "hal_drivers.h"
 
 
 /*********************************************************************
@@ -61,7 +62,7 @@
 
 // Task ID not initialized
 #define NO_TASK_ID 0xFF
-
+#define ACTIVING_TIMEOUT  100
 
 /*********************************************************************
  * TYPEDEFS
@@ -72,6 +73,12 @@
  */
 uint8 OnboardKeyIntEnable;
 
+void hal_initialising_state_enter(void); 
+void hal_initialising_state_exit(void);
+void hal_activing_state_exit(void);
+void hal_activing_state_enter(void);
+void hal_active_state_exit(void);
+void hal_deactive_state_exit(void);
 
 /*********************************************************************
  * EXTERNAL VARIABLES
@@ -98,12 +105,26 @@ void appForceBoot(void);
 
 hal_state_t hal_state;
 
+typedef enum
+{
+    HOLD,
+    RELEASE
+}hal_key_enum_t;
+
+typedef struct 
+{
+    hal_key_enum_t  hal_key_enum;
+    uint16 holdtime;
+}hal_key_state_t;
 
 
+hal_key_state_t power_key;
 /*********************************************************************
  * LOCAL VARIABLES
  */
-
+void HalPowerReleaseFun(void);
+void HalPowerShortFun(void);
+void HalPowerLongFun(void);
 // Registered keys task ID, initialized to NOT USED.
 static uint8 registeredKeysTaskID = NO_TASK_ID;
 
@@ -129,6 +150,9 @@ void InitBoard( uint8 level )
     /* Initialize Key stuff */
     OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
     HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
+    HalGpioInit();
+    hal_state = initialising;
+    hal_set_state(initialising);
   }
 }
 
@@ -263,29 +287,21 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
   if ( OnBoard_SendKeys( keys, shift ) != SUCCESS )
   {
     // Process SW1 here
-    if ( keys & HAL_KEY_SW_1 )  // Switch 1
+    if ( keys & HAL_KEY_POWER_BUTTON )  // Switch 1
     {
+        power_key.hal_key_enum = HOLD;
+        power_key.holdtime = 0;
+    }
+    else
+    {
+        HalPowerReleaseFun();
     }
     // Process SW2 here
-    if ( keys & HAL_KEY_SW_2 )  // Switch 2
+    if ( keys & HAL_KEY_SCAN_BUTTON )  // Switch 2
     {
+        osal_set_event (Hal_TaskID, HAL_KEY_FUNCTION_EVENT);
     }
-    // Process SW3 here
-    if ( keys & HAL_KEY_SW_3 )  // Switch 3
-    {
-    }
-    // Process SW4 here
-    if ( keys & HAL_KEY_SW_4 )  // Switch 4
-    {
-    }
-    // Process SW5 here
-    if ( keys & HAL_KEY_SW_5 )  // Switch 5
-    {
-    }
-    // Process SW6 here
-    if ( keys & HAL_KEY_SW_6 )  // Switch 6
-    {
-    }
+    
   }
 
   /* If any key is currently pressed down and interrupt
@@ -356,26 +372,133 @@ static void enablepower(void)
     P0_6 = 1;
 }
 
+static void hal_beep_turn_on(void)
+{}
+static void hal_moto_turn_on(void)
+{}
+
+void HalPowerReleaseFun(void)
+{}
+
+void hal_initialising_state_exit(void)
+{
+    enablepower();
+}
+
 void hal_initialising_state_enter(void) 
 {	
   
-  hal_state = initialising;
+    hal_state = initialising;
 	/** floating, if user release button and power cable unplugged, system stop **/
 	disablepower();	
 }
 
 void HalGpioInit(void)
 {
-    /*MUC POWER PIN ,MOTO PIN, SW_DETECT PIN, USB SW_DETECT,BLUE LED PIN , SW_SCAN PIN TO GPIO */
-    P0SEL = (~BV(6)) & (~BV(5)) & (~BV(4)) & (~BV(1)) &(~BV(0));    
+    /*MUC POWER PIN ,MOTO PIN,  USB SW_DETECT,BLUE LED PIN  */
+    P0SEL &= (~BV(6)) & ( (~BV(4)) & (~BV(1)) );    
     /*SET GPIO AS OUTPUT*/
-    P0DIR |= BV(6) | BV(5) | (BV(1)) ;
+    P0DIR |= BV(6) | (BV(1)) ;
     
     /*SET GPIO AS INPUT*/
-    P0DIR &= ~BV(4) & ~BV(0);
+    P0DIR &= ~BV(4);
     
 }
 
+void PowerKeyStateInit(void)
+{
+    power_key.hal_key_enum =  RELEASE;  
+    power_key.holdtime = 0;
+    osal_clear_event( Hal_TaskID, HAL_KEY_SHORT_EVENT);
+    osal_clear_event( Hal_TaskID, HAL_KEY_LONG_EVENT);
+                                  
+}
+
+
+
+void PowerKeyHoldTimeCount(void)
+{
+    power_key.holdtime++;
+    if(power_key.holdtime >= 10)
+        osal_set_event (Hal_TaskID, HAL_KEY_SHORT_EVENT);
+    if(power_key.holdtime>=20)
+        osal_set_event (Hal_TaskID, HAL_KEY_LONG_EVENT);
+}
+
+
+void HalPowerLongFun(void)
+{
+  
+}
+
+
+
+void hal_activing_state_exit(void)
+{}
+
+
+void hal_activing_state_enter(void)
+{
+    hal_state = activing;
+    hal_beep_turn_on();
+    hal_moto_turn_on();
+    enablepower();
+    /**have a time if timeout is arrived , active in enter */
+    osal_start_timerEx( Hal_TaskID, HAL_ACTIVING_TIMEOUT, ACTIVING_TIMEOUT );
+}
+
+void hal_active_state_enter(void)
+{}
+void hal_active_state_exit(void)
+{}
+
+void hal_deactive_state_enter(void)
+{}
+void hal_deactive_state_exit(void)
+{}
+
+void hal_set_state(hal_state_t state)
+{
+  switch (hal_state)
+  {  
+        case initialising :
+            hal_initialising_state_exit();
+            break;
+        case activing:
+            hal_activing_state_exit();
+            break;
+        case active:
+            hal_active_state_exit();
+            break;
+            
+        case deactive:
+            hal_deactive_state_exit();
+            break;
+        default:
+            break;
+          
+        hal_state = state;
+          
+        switch(state)  
+        { 
+            case initialising:
+                hal_initialising_state_enter();
+                break;
+            case activing:
+                hal_activing_state_enter();
+                break;
+            case active:
+                hal_active_state_enter();
+                break;
+            case deactive:
+                hal_deactive_state_enter();
+                break;
+            default:
+            break;
+        }
+  }
+  
+}
 #endif
 
 /*********************************************************************

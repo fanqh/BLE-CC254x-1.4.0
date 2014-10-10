@@ -74,7 +74,10 @@
 #endif
    
 #include "Onboard.h"
+#include "simpleBLEPeripheral.h"
 
+
+#define AUTO_SHUTDOWN_TIMEOUT 600000  //10MIN
 /**************************************************************************************************
  *                                      GLOBAL VARIABLES
  **************************************************************************************************/
@@ -166,10 +169,7 @@ void HalDriverInit (void)
   usbHidInit();
 #endif
   
-  HalGpioInit();
-  
-  
-  hal_initialising_state_enter();
+
 }
 
 /**************************************************************************************************
@@ -220,49 +220,128 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
     return (events ^ PERIOD_RSSI_RESET_EVT);
   }
 #endif
+  
+  
+       if (events & HAL_KEY_EVENT)
+       {
+       #if (defined HAL_KEY) && (HAL_KEY == TRUE)
+            /* Check for keys */
+            HalKeyPoll();
 
-  if ( events & HAL_LED_BLINK_EVENT )
-  {
-#if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
-    HalLedUpdate();
-#endif /* BLINK_LEDS && HAL_LED */
-    return events ^ HAL_LED_BLINK_EVENT;
-  }
+            /* if interrupt disabled, do next polling */
+            if (!Hal_KeyIntEnable)
+              
+            {
+                PowerKeyHoldTimeCount();
+                osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100);
+            }
+      #endif
+            return events ^ HAL_KEY_EVENT;
+       }
+/*****************************************************************************/
+ //sample battery voltage and updata led
+/*****************************************************************************/
 
-switch(hal_state)
-{
+
+    switch(hal_state)
+    {
     case initialising:
       
+        if ( events & HAL_LED_BLINK_EVENT )
+        {   
+            uint16 voltage;
+            
+            voltage = HalAdcRead (7, HAL_ADC_DEC_512);
+#if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
+            HalLedUpdate();
+#endif /* BLINK_LEDS && HAL_LED */
+            return events ^ HAL_LED_BLINK_EVENT;
+        }
+        if(events & HAL_KEY_SHORT_EVENT)
+        {
+          hal_set_state(activing);
+
+          return events ^ HAL_KEY_SHORT_EVENT;
+        }
+         
       break;
         
-}  
+      
+  case activing:
+        if ( events & HAL_LED_BLINK_EVENT )
+        {   
+            uint16 voltage;
+            
+            voltage = HalAdcRead (7, HAL_ADC_DEC_512);
+#if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
+            HalLedUpdate();
+#endif /* BLINK_LEDS && HAL_LED */
+            return events ^ HAL_LED_BLINK_EVENT;
+        }
+        if(events & HAL_ACTIVING_TIMEOUT)
+        {
+            hal_set_state(active);
+            return events ^ HAL_ACTIVING_TIMEOUT;
+        }
+        if(events & HAL_KEY_LONG_EVENT)
+        {
+            hal_set_state(active);
+            
+            osal_set_event( simpleBLEPeripheral_TaskID, HAL_MESSAGE_SWITCH_ON );
+            return events ^ HAL_KEY_LONG_EVENT;
+        }
+      break;
+      
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  if (events & HAL_KEY_EVENT)
-  {
-#if (defined HAL_KEY) && (HAL_KEY == TRUE)
-    /* Check for keys */
-    HalKeyPoll();
+    case active :
+      
+        if ( events & HAL_LED_BLINK_EVENT )
+        {   
+            uint16 voltage;
+            
+            voltage = HalAdcRead (7, HAL_ADC_DEC_512);
+#if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
+            HalLedUpdate();
+#endif /* BLINK_LEDS && HAL_LED */
+            return events ^ HAL_LED_BLINK_EVENT;
+        }
+        
+        if(events & HAL_KEY_SHORT_EVENT)
+        {
+          hal_set_state(deactive);
 
-    /* if interrupt disabled, do next polling */
-    if (!Hal_KeyIntEnable)
-    {
-      osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100);
+          return events ^ HAL_KEY_SHORT_EVENT;
+        }
+        if(events & HAL_KEY_FUNCTION_EVENT)
+        {
+          osal_set_event (simpleBLEPeripheral_TaskID, HAL_KEY_FUNCTION_EVENT);
+          
+          osal_stop_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT );
+          osal_start_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT,  AUTO_SHUTDOWN_TIMEOUT);  //10MIN
+          
+          return events ^ HAL_KEY_FUNCTION_EVENT;
+        }
+        if(events & HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT)
+        {
+          hal_set_state(deactive);
+          return events ^ HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT;
+        }
+        break;
+        
+    case deactive:
+      
+        break;
+        
+    default :
+      break;
+      
+        
+    
+  
     }
-#endif
-    return events ^ HAL_KEY_EVENT;
-  }
+  
+  
+
 
 #if defined POWER_SAVING
   if ( events & HAL_SLEEP_TIMER_EVENT )
@@ -289,8 +368,8 @@ switch(hal_state)
 #endif
 
   return 0;
+    
 }
-
 /**************************************************************************************************
  * @fn      Hal_ProcessPoll
  *

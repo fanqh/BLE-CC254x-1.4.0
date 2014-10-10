@@ -286,6 +286,7 @@
           <state>xPLUS_BROADCASTER</state>
           <state>HAL_LCD=FALSE</state>
           <state>HAL_LED=TRUE</state>
+          <state>HAL_ADC=TRUE</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -9131,6 +9132,7 @@
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\osal\include</state>
+          <state>$PROJ_DIR$\..\Source</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\services\saddr</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\include</state>
           <state>$PROJ_DIR$\..\..\..\..\Components\ble\controller\phy</state>

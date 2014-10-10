@@ -143,7 +143,7 @@
 /*********************************************************************
  * LOCAL VARIABLES
  */
-static uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
+uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 

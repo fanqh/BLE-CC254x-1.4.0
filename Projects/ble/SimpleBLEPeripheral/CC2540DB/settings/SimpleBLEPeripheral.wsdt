@@ -12,7 +12,7 @@
           
           
           
-        <Column0>277</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>269</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -20,11 +20,11 @@
         
         
       <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1150</ColumnWidth1><ColumnWidth2>306</ColumnWidth2><ColumnWidth3>76</ColumnWidth3></Build>
-    <Find-in-Files><ColumnWidth0>549</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>942</ColumnWidth2></Find-in-Files><Select-Ambiguous-Definitions><ColumnWidth0>549</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>942</ColumnWidth2></Select-Ambiguous-Definitions></Static>
+    <Find-in-Files><ColumnWidth0>549</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>942</ColumnWidth2></Find-in-Files><Select-Ambiguous-Definitions><ColumnWidth0>549</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>942</ColumnWidth2></Select-Ambiguous-Definitions><Debug-Log><ColumnWidth0>21</ColumnWidth0><ColumnWidth1>1533</ColumnWidth1></Debug-Log><TerminalIO/></Static>
     <Windows>
       
       
-    <Wnd0>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-14661-18977</Identity>
@@ -32,11 +32,11 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>SimpleBLEPeripheral</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Common</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB/Config</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB/Drivers</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/Output</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/PROFILES</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/TOOLS</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>SimpleBLEPeripheral</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/APP</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Common</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Common/hal_drivers.c</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB/Config</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/HAL/Target/CC2540EB/Drivers</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/Output</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/PROFILES</ExpandedNode><ExpandedNode>SimpleBLEPeripheral/TOOLS</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
         <Tabs>
           <Tab>
             <Identity>TabID-2407-19411</Identity>
@@ -44,22 +44,22 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
-        <Tab><Identity>TabID-13139-20625</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-2702-8106</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab></Tabs>
+        <Tab><Identity>TabID-13139-20625</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-2702-8106</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab><Identity>TabID-4803-32568</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>1</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>282</YPos2><SelStart2>9190</SelStart2><SelEnd2>9190</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_key.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>609</YPos2><SelStart2>22782</SelStart2><SelEnd2>22782</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\simpleBLEPeripheral.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>435</YPos2><SelStart2>17025</SelStart2><SelEnd2>17025</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\common\cc2540\OnBoard.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>109</YPos2><SelStart2>4628</SelStart2><SelEnd2>4628</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\SimpleBLEPeripheral_Main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>75</YPos2><SelStart2>4163</SelStart2><SelEnd2>4163</SelEnd2></Tab><ActiveTab>4</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_key.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>410</YPos2><SelStart2>14029</SelStart2><SelEnd2>14029</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\simpleBLEPeripheral.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>478</YPos2><SelStart2>9554</SelStart2><SelEnd2>9554</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\common\cc2540\OnBoard.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>283</YPos2><SelStart2>8965</SelStart2><SelEnd2>8965</SelEnd2></Tab><ActiveTab>2</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\common\cc2540\OnBoard.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>161</YPos2><SelStart2>6113</SelStart2><SelEnd2>6113</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\osal\common\OSAL_Timers.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>248</YPos2><SelStart2>7611</SelStart2><SelEnd2>7611</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_led.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>335</YPos2><SelStart2>10864</SelStart2><SelEnd2>10864</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\common\hal_drivers.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>232</YPos2><SelStart2>8122</SelStart2><SelEnd2>8122</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\Source\SimpleBLEPeripheral_Main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>41</YPos2><SelStart2>3688</SelStart2><SelEnd2>3688</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_mcu.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>90</YPos2><SelStart2>4902</SelStart2><SelEnd2>4902</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Program Files\IAR Systems\Embedded Workbench 6.5\8051\inc\ioCC2540.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>123</YPos2><SelStart2>7263</SelStart2><SelEnd2>7263</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-01379e40><key>iaridepm.enu1</key></Toolbar-01379e40></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>746</Bottom><Right>367</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>125628</sizeHorzCX><sizeHorzCY>202224</sizeHorzCY><sizeVertCX>231784</sizeVertCX><sizeVertCY>756320</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>199</Bottom><Right>1594</Right><x>-2</x><y>-2</y><xscreen>1596</xscreen><yscreen>201</yscreen><sizeHorzCX>1002513</sizeHorzCX><sizeHorzCY>203236</sizeHorzCY><sizeVertCX>125628</sizeVertCX><sizeVertCY>202224</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-01379d18><key>iaridepm.enu1</key></Toolbar-01379d18></Sizes></Row0><Row1><Sizes/></Row1><Row2><Sizes/></Row2></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>737</Bottom><Right>359</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>125628</sizeHorzCX><sizeHorzCY>202224</sizeHorzCY><sizeVertCX>226759</sizeVertCX><sizeVertCY>747219</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>208</Bottom><Right>1594</Right><x>-2</x><y>-2</y><xscreen>1596</xscreen><yscreen>210</yscreen><sizeHorzCX>1002513</sizeHorzCX><sizeHorzCY>212336</sizeHorzCY><sizeVertCX>125628</sizeVertCX><sizeVertCY>202224</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

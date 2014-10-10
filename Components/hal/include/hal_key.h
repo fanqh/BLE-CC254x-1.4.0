@@ -89,6 +89,11 @@ extern "C"
 #define HAL_KEY_BUTTON_UP      0x40  // Button up
 #define HAL_KEY_BUTTON_DOWN    0x80  // Button down
 
+   
+#define HAL_KEY_POWER_BUTTON  0X20
+#define HAL_KEY_SCAN_BUTTON   0X01    
+   
+   
 /**************************************************************************************************
  * TYPEDEFS
  **************************************************************************************************/

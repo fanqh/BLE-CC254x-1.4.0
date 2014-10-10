@@ -110,6 +110,12 @@ extern "C"
 #define HAL_ADC_REF_DIFF          0xc0    /* AIN7,AIN6 Differential Reference */
 #define HAL_ADC_REF_BITS          0xc0    /* Bits [7:6] */
 
+   
+#define HAL_ADC_DEC_064     0x00    /* Decimate by 64 : 8-bit resolution */
+#define HAL_ADC_DEC_128     0x10    /* Decimate by 128 : 10-bit resolution */
+#define HAL_ADC_DEC_256     0x20    /* Decimate by 256 : 12-bit resolution */
+#define HAL_ADC_DEC_512     0x30    /* Decimate by 512 : 14-bit resolution */
+#define HAL_ADC_DEC_BITS    0x30    /* Bits [5:4] */   
 /**************************************************************************************************
  *                                        FUNCTIONS - API
  **************************************************************************************************/

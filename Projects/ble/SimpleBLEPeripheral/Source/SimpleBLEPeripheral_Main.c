@@ -94,7 +94,7 @@ int main(void)
   HAL_ENABLE_INTERRUPTS();
 
   // Final board initialization
-  InitBoard( OB_READY );
+ InitBoard( OB_READY );
 
   #if defined ( POWER_SAVING )
     osal_pwrmgr_device( PWRMGR_BATTERY );

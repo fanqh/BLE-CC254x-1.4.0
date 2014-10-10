@@ -146,7 +146,7 @@ uint8 OnBoard_SendKeys( uint8 keys, uint8 state );
 typedef enum 
 {
     initialising,
-    activng,
+    activing,
     active,
     deactive
 }hal_state_t;
@@ -193,7 +193,9 @@ extern hal_state_t hal_state;
 void HalGpioInit(void);
 void disablepower(void);
 void enablepower(void);
-void hal_initialising_state_enter(void); 
+void PowerKeyStateInit(void);
+void PowerKeyHoldTimeCount(void);
+void hal_set_state(hal_state_t state);
 /*********************************************************************
  */
 

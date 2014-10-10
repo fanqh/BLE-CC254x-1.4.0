@@ -58,6 +58,13 @@ extern "C"
 #define PERIOD_RSSI_RESET_EVT               0x0040
 #define HAL_LED_BLINK_EVENT                 0x0020
 #define HAL_KEY_EVENT                       0x0010
+#define HAL_KEY_SHORT_EVENT                 0x0100
+#define HAL_KEY_LONG_EVENT                  0x0110 
+#define HAL_EKY_RELEASE_EVENT               0x0120  
+#define HAL_KEY_FUNCTION_EVENT               0x0140
+#define HAL_ACTIVING_TIMEOUT                0X0180
+#define HAL_MESSAGE_SWITCH_ON               0x0200
+#define HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT    0X0210   
 
 #if defined POWER_SAVING
 #define HAL_SLEEP_TIMER_EVENT               0x0004
@@ -67,6 +74,9 @@ extern "C"
 
 #define HAL_PWRMGR_CONSERVE_DELAY           10
 #define PERIOD_RSSI_RESET_TIMEOUT           10
+
+
+
 
 /**************************************************************************************************
  * GLOBAL VARIABLES
