@@ -50,7 +50,12 @@
 #include "hal_led.h"
 #include "hal_key.h"
 #include "hal_drivers.h"
-
+#include "hal_board_cfg.h"
+#include "hal_adc.h"
+ 
+#include "hal_led.h"
+ #include "iic.h"
+ #include "tps65721.h"
 
 /*********************************************************************
  * MACROS
@@ -134,8 +139,11 @@ static uint8 registeredKeysTaskID = NO_TASK_ID;
  * @param   level: COLD,WARM,READY
  * @return  None
  */
+
+  uint8 state = 0;
 void InitBoard( uint8 level )
 {
+
   if ( level == OB_COLD )
   {
     // Interrupts off
@@ -147,12 +155,16 @@ void InitBoard( uint8 level )
   }
   else  // !OB_COLD
   {
+    
     /* Initialize Key stuff */
     OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
     HalKeyConfig( OnboardKeyIntEnable, OnBoard_KeyCallback);
-    HalGpioInit();
+    
     hal_state = initialising;
     hal_set_state(initialising);
+    IIC_Init();
+    
+    HalGpioInit();
   }
 }
 
@@ -299,7 +311,20 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
     // Process SW2 here
     if ( keys & HAL_KEY_SCAN_BUTTON )  // Switch 2
     {
+      
+        uint16 voltage;
+         
+        
+        
+        voltage = HalAdcRead (7, HAL_ADC_RESOLUTION_8);
+        {
+        IICread(SLAVE_DEVICE_ADDR, CHGCONFIG1_BASE, &state, 1);
+        }
+       // HAL_TURN_ON_LED_GREEN();
+        
+        HalLedBlink (HAL_LED_RED, 3, 50, 600);
         osal_set_event (Hal_TaskID, HAL_KEY_FUNCTION_EVENT);
+       
     }
     
   }
@@ -375,7 +400,9 @@ static void enablepower(void)
 static void hal_beep_turn_on(void)
 {}
 static void hal_moto_turn_on(void)
-{}
+{
+
+}
 
 void HalPowerReleaseFun(void)
 {}
@@ -419,9 +446,9 @@ void PowerKeyStateInit(void)
 void PowerKeyHoldTimeCount(void)
 {
     power_key.holdtime++;
-    if(power_key.holdtime >= 10)
+    if(power_key.holdtime == 10)
         osal_set_event (Hal_TaskID, HAL_KEY_SHORT_EVENT);
-    if(power_key.holdtime>=20)
+    else if(power_key.holdtime==20)  ///need to add some to stop event continuously
         osal_set_event (Hal_TaskID, HAL_KEY_LONG_EVENT);
 }
 
@@ -475,10 +502,10 @@ void hal_set_state(hal_state_t state)
             hal_deactive_state_exit();
             break;
         default:
-            break;
-          
+            break; 
+    }    
+
         hal_state = state;
-          
         switch(state)  
         { 
             case initialising:
@@ -496,7 +523,7 @@ void hal_set_state(hal_state_t state)
             default:
             break;
         }
-  }
+  
   
 }
 #endif

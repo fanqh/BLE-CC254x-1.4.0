@@ -58,12 +58,28 @@ extern "C"
  * CONSTANTS
  */
 
+#define HAL_LED_BLUE      0x01
+#define HAL_LED_GREEN     0x02
+#define HAL_LED_RED       0x04
+#define HAL_LED_WARM      0x08
+#define HAL_BUZZ          0X10
+#define HAL_MOTOR         0X20   
+   
+   
 /* LEDS - The LED number is the same as the bit position */
-#define HAL_LED_1     0x01
-#define HAL_LED_2     0x02
-#define HAL_LED_3     0x04
-#define HAL_LED_4     0x08
+#define HAL_LED_1     HAL_LED_BLUE
+#define HAL_LED_2     HAL_LED_GREEN
+#define HAL_LED_3     HAL_LED_RED
+#define HAL_LED_4     HAL_LED_WARM
+#define HAL_LED_5     HAL_BUZZ
+#define HAL_LED_6     HAL_MOTOR 
+
 #define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4)
+  
+
+
+//#define HAL_LED_ALL   (HAL_LED_BLUE | HAL_LED_GREEN | HAL_LED_RED | HAL_LED_WARM | HAL_BUZZ | HAL_MOTOR)
+  
 
 /* Modes */
 #define HAL_LED_MODE_OFF     0x00

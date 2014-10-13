@@ -88,6 +88,7 @@
 #include "hal_key.h"
 #include "osal.h"
 #include "OnBoard.h"
+#include "hal_led.h"
 
 #if (defined HAL_KEY) && (HAL_KEY == TRUE)
 
@@ -459,6 +460,7 @@ void halProcessKeyInterrupt (void)
 
   if (HAL_POWER_PXIFG & HAL_POWER_BIT)  /* Interrupt Flag has been set */
   {
+    //HalLedBlink ( HAL_LED_1, 1, 50, 100);
     HAL_POWER_PXIFG = ~(HAL_POWER_BIT); /* Clear Interrupt Flag */
     valid = TRUE;
   }

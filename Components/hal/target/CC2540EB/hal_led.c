@@ -49,6 +49,9 @@
 #include "osal.h"
 #include "hal_board.h"
 
+#ifdef MINISCAN
+    #include "iic.h"
+#endif
 /***************************************************************************************************
  *                                              TYPEDEFS
  ***************************************************************************************************/
@@ -108,11 +111,26 @@ void HalLedOnOff (uint8 leds, uint8 mode);
  ***************************************************************************************************/
 void HalLedInit (void)
 {
+  
+  uint8 config;
+    
 #if (HAL_LED == TRUE)
   HalLedSet(HAL_LED_ALL, HAL_LED_MODE_OFF);  // Initialize all LEDs to OFF.
 
+  
+  BUZZ_SBIT = 0;
+  MOTOR_SBIT = 0;
   // Set LED GPIOs to outputs.
-  LED1_DDR |= LED1_BV;
+  LED_BLUE_DDR |= LED_BLUE_BV;
+  BUZZ_DDR |= BUZZ_BV;
+  MOTOR_DDR |= MOTOR_BV;
+  
+  P0SEL &= ~BV(0); 
+  P1SEL &= ~(BV(0)|BV(1));  //BLUE BUZZ MOTOR SET TO GENERAL IO
+  
+  config = 0xf2;
+  IICwrite(SLAVE_DEVICE_ADDR, GPIODIR_BASE, &config, 1);
+  
 #if (!defined HAL_PA_LNA && !defined HAL_PA_LNA_CC2590)
   LED2_DDR |= LED2_BV;
 #if (!defined CC2540_MINIDK && !defined HAL_BOARD_CC2540USB)
@@ -380,11 +398,11 @@ void HalLedOnOff (uint8 leds, uint8 mode)
   {
     if (mode == HAL_LED_MODE_ON)
     {
-      HAL_TURN_ON_LED1();
+      HAL_TURN_ON_LED_BLUE();
     }
     else
     {
-      HAL_TURN_OFF_LED1();
+      HAL_TURN_OFF_LED_BLUE();
     }
   }
 
@@ -392,11 +410,11 @@ void HalLedOnOff (uint8 leds, uint8 mode)
   {
     if (mode == HAL_LED_MODE_ON)
     {
-      HAL_TURN_ON_LED2();
+      HAL_TURN_ON_LED_GREEN();
     }
     else
     {
-      HAL_TURN_OFF_LED2();
+      HAL_TURN_OFF_LED_GREEN();
     }
   }
 
@@ -404,11 +422,11 @@ void HalLedOnOff (uint8 leds, uint8 mode)
   {
     if (mode == HAL_LED_MODE_ON)
     {
-      HAL_TURN_ON_LED3();
+      HAL_TURN_ON_LED_RED();
     }
     else
     {
-      HAL_TURN_OFF_LED3();
+      HAL_TURN_OFF_LED_RED();
     }
   }
 
@@ -416,11 +434,11 @@ void HalLedOnOff (uint8 leds, uint8 mode)
   {
     if (mode == HAL_LED_MODE_ON)
     {
-      HAL_TURN_ON_LED4();
+      HAL_TURN_ON_LED_WARM();
     }
     else
     {
-      HAL_TURN_OFF_LED4();
+      HAL_TURN_OFF_LED_WARM();
     }
   }
 
@@ -472,11 +490,11 @@ void HalLedEnterSleep( void )
 
 #if (HAL_LED == TRUE)
   /* Save the state of each led */
-  HalSleepLedState = 0;
-  HalSleepLedState |= HAL_STATE_LED1();
-  HalSleepLedState |= HAL_STATE_LED2() << 1;
-  HalSleepLedState |= HAL_STATE_LED3() << 2;
-  HalSleepLedState |= HAL_STATE_LED4() << 3;
+//  HalSleepLedState = 0;
+//  HalSleepLedState |= HAL_STATE_LED1();
+//  HalSleepLedState |= HAL_STATE_LED2() << 1;
+//  HalSleepLedState |= HAL_STATE_LED3() << 2;
+//  HalSleepLedState |= HAL_STATE_LED4() << 3;
 
   /* TURN OFF all LEDs to save power */
   HalLedOnOff (HAL_LED_ALL, HAL_LED_MODE_OFF);

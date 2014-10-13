@@ -72,7 +72,7 @@ void IIC_Init(void)
 }
 //----产生IIC起始信号-------------------------------------------------------------
 void IIC_Start(void) 
-{
+{   
 	SET_SDA_HIGH();	  	  
 	SET_SCLK_HIGH();
 	delay_us(9); //9

@@ -60,8 +60,16 @@ extern "C"
  * CONSTANTS
  */
 
-/* Board Identifier */
 
+#define MINISCAN
+
+  
+#ifdef MINISCAN
+    #include "tps65721.h"
+    #include "iic.h"
+#endif
+  
+/* Board Identifier */
 #if !defined (HAL_BOARD_CC2530EB_REV17) && !defined (HAL_BOARD_CC2530EB_REV13)
   #define HAL_BOARD_CC2530EB_REV17
 #endif
@@ -102,10 +110,27 @@ extern "C"
 #define HAL_LED_BLINK_DELAY()   st( { volatile uint32 i; for (i=0; i<0x5800; i++) { }; } )
 
 /* 1 - Green */
-#define LED1_BV                        BV(0)
-#define LED1_SBIT                      P1_0
-#define LED1_DDR                       P1DIR
-#define LED1_POLARITY                  ACTIVE_HIGH
+//#define LED1_BV                        BV(0)
+//#define LED1_SBIT                      P1_0
+//#define LED1_DDR                       P1DIR
+//#define LED1_POLARITY                  ACTIVE_HIGH
+  
+  
+#define LED_BLUE_BV                        BV(1)
+#define LED_BLUE_SBIT                      P0_1
+#define LED_BLUE_DDR                       P0DIR
+#define LED_BLUE_POLARITY                  ACTIVE_HIGH
+
+#define BUZZ_BV                        BV(1)
+#define BUZZ_SBIT                      P1_1
+#define BUZZ_DDR                       P1DIR
+#define BUZZ_POLARITY                  ACTIVE_HIGH
+
+
+#define MOTOR_BV                        BV(0)
+#define MOTOR_SBIT                      P1_0
+#define MOTOR_DDR                       P1DIR
+#define MOTOR_POLARITY                  ACTIVE_HIGH
 
 #ifdef HAL_BOARD_CC2530EB_REV17
   /* 2 - Red */
@@ -271,25 +296,55 @@ extern "C"
 
 #if defined (HAL_BOARD_CC2530EB_REV17) && !defined (HAL_PA_LNA) && !defined (HAL_PA_LNA_CC2590)
 
-  #define HAL_TURN_OFF_LED1()       st( LED1_SBIT = LED1_POLARITY (0); )
-  #define HAL_TURN_OFF_LED2()       st( LED2_SBIT = LED2_POLARITY (0); )
-  #define HAL_TURN_OFF_LED3()       st( LED3_SBIT = LED3_POLARITY (0); )
-  #define HAL_TURN_OFF_LED4()       HAL_TURN_OFF_LED1()
+//  #define HAL_TURN_OFF_LED1()       st( LED1_SBIT = LED1_POLARITY (0); )
+//  #define HAL_TURN_OFF_LED2()       st( LED2_SBIT = LED2_POLARITY (0); )
+//  #define HAL_TURN_OFF_LED3()       st( LED3_SBIT = LED3_POLARITY (0); )
+//  #define HAL_TURN_OFF_LED4()       HAL_TURN_OFF_LED1()
+//
+//  #define HAL_TURN_ON_LED1()        st( LED1_SBIT = LED1_POLARITY (1); )
+//  #define HAL_TURN_ON_LED2()        st( LED2_SBIT = LED2_POLARITY (1); )
+//  #define HAL_TURN_ON_LED3()        st( LED3_SBIT = LED3_POLARITY (1); )
+//  #define HAL_TURN_ON_LED4()        HAL_TURN_ON_LED1()
+//
+//  #define HAL_TOGGLE_LED1()         st( if (LED1_SBIT) { LED1_SBIT = 0; } else { LED1_SBIT = 1;} )
+//  #define HAL_TOGGLE_LED2()         st( if (LED2_SBIT) { LED2_SBIT = 0; } else { LED2_SBIT = 1;} )
+//  #define HAL_TOGGLE_LED3()         st( if (LED3_SBIT) { LED3_SBIT = 0; } else { LED3_SBIT = 1;} )
+//  #define HAL_TOGGLE_LED4()         HAL_TOGGLE_LED1()
+//
+//  #define HAL_STATE_LED1()          (LED1_POLARITY (LED1_SBIT))
+//  #define HAL_STATE_LED2()          (LED2_POLARITY (LED2_SBIT))
+//  #define HAL_STATE_LED3()          (LED3_POLARITY (LED3_SBIT))
+//  #define HAL_STATE_LED4()          HAL_STATE_LED1()
 
-  #define HAL_TURN_ON_LED1()        st( LED1_SBIT = LED1_POLARITY (1); )
-  #define HAL_TURN_ON_LED2()        st( LED2_SBIT = LED2_POLARITY (1); )
-  #define HAL_TURN_ON_LED3()        st( LED3_SBIT = LED3_POLARITY (1); )
-  #define HAL_TURN_ON_LED4()        HAL_TURN_ON_LED1()
 
-  #define HAL_TOGGLE_LED1()         st( if (LED1_SBIT) { LED1_SBIT = 0; } else { LED1_SBIT = 1;} )
-  #define HAL_TOGGLE_LED2()         st( if (LED2_SBIT) { LED2_SBIT = 0; } else { LED2_SBIT = 1;} )
-  #define HAL_TOGGLE_LED3()         st( if (LED3_SBIT) { LED3_SBIT = 0; } else { LED3_SBIT = 1;} )
-  #define HAL_TOGGLE_LED4()         HAL_TOGGLE_LED1()
+  #define HAL_TURN_OFF_LED_BLUE()       st( LED_BLUE_SBIT = LED_BLUE_POLARITY (0); )
+  #define HAL_TURN_ON_LED_BLUE()        st( LED_BLUE_SBIT = LED_BLUE_POLARITY (1); )
+  #define HAL_TOGGLE_LED_BLUE()         st( if (LED_BLUE_SBIT) { LED_BLUE_SBIT = 0; } else { LED_BLUE_SBIT = 1;} )
+  #define HAL_STATE_LED_BLUE()              (LED_BLUE_POLARITY (LED_BLUE_SBIT))
 
-  #define HAL_STATE_LED1()          (LED1_POLARITY (LED1_SBIT))
-  #define HAL_STATE_LED2()          (LED2_POLARITY (LED2_SBIT))
-  #define HAL_STATE_LED3()          (LED3_POLARITY (LED3_SBIT))
-  #define HAL_STATE_LED4()          HAL_STATE_LED1()
+
+#define HAL_TURN_OFF_LED_GREEN()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(2)|state);}
+#define HAL_TURN_ON_LED_GREEN()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(2)) & state);} 
+
+#define HAL_TURN_OFF_LED_RED()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(3)|state);}
+#define HAL_TURN_ON_LED_RED()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(3)) & state);}
+
+#define HAL_TURN_OFF_LED_WARM()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(0)|state);}
+#define HAL_TURN_ON_LED_WARM()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(0)) & state);}
+
+
+#define HAL_TURN_OFF_BUZZ()       st( BUZZ_SBIT = BUZZ_POLARITY (0); )
+#define HAL_TURN_ON_BUZZ()        st( BUZZ_SBIT = BUZZ_POLARITY (1); )
+#define HAL_TOGGLE_BUZZ()         st( if (BUZZ_SBIT) { BUZZ_SBIT = 0; } else { BUZZ_SBIT = 1;} )
+#define HAL_STATE_BUZZ()         (BUZZ_POLARITY (BUZZ_SBIT))
+
+
+#define HAL_TURN_OFF_MOTOR()       st( MOTOR_SBIT = MOTOR_POLARITY (0); )
+#define HAL_TURN_ON_MOTOR()        st( MOTOR_SBIT = MOTOR_POLARITY (1); )
+#define HAL_TOGGLE_MOTOR()         st( if (MOTOR_SBIT) { MOTOR_SBIT = 0; } else { MOTOR_SBIT = 1;} )
+#define HAL_STATE_MOTOR()         (MOTOR_POLARITY (MOTOR_SBIT))
+
+
 
 #elif defined (HAL_BOARD_CC2530EB_REV13) || defined (HAL_PA_LNA) || defined (HAL_PA_LNA_CC2590)
 
