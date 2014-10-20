@@ -317,14 +317,16 @@ extern "C"
 //  #define HAL_STATE_LED4()          HAL_STATE_LED1()
 
 
-  #define HAL_TURN_OFF_LED_BLUE()       st( LED_BLUE_SBIT = LED_BLUE_POLARITY (0); )
-  #define HAL_TURN_ON_LED_BLUE()        st( LED_BLUE_SBIT = LED_BLUE_POLARITY (1); )
-  #define HAL_TOGGLE_LED_BLUE()         st( if (LED_BLUE_SBIT) { LED_BLUE_SBIT = 0; } else { LED_BLUE_SBIT = 1;} )
-  #define HAL_STATE_LED_BLUE()              (LED_BLUE_POLARITY (LED_BLUE_SBIT))
+//  #define HAL_TURN_OFF_LED_BLUE()       st( LED_BLUE_SBIT = LED_BLUE_POLARITY (0); )
+//  #define HAL_TURN_ON_LED_BLUE()        st( LED_BLUE_SBIT = LED_BLUE_POLARITY (1); )
+//  #define HAL_TOGGLE_LED_BLUE()         st( if (LED_BLUE_SBIT) { LED_BLUE_SBIT = 0; } else { LED_BLUE_SBIT = 1;} )
+//  #define HAL_STATE_LED_BLUE()              (LED_BLUE_POLARITY (LED_BLUE_SBIT))
 
 
-#define HAL_TURN_OFF_LED_GREEN()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(2)|state);}
-#define HAL_TURN_ON_LED_GREEN()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(2)) & state);} 
+//#define HAL_TURN_OFF_LED_GREEN()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(2)|state);}
+//#define HAL_TURN_ON_LED_GREEN()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(2)) & state);}
+
+
 
 #define HAL_TURN_OFF_LED_RED()  {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(3)|state);}
 #define HAL_TURN_ON_LED_RED()   {uint8 state; IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(3)) & state);}

@@ -9,7 +9,7 @@ TriggerName=main
 LimitSize=0
 ByteLimit=50
 [DebugChecksum]
-Checksum=1728076293
+Checksum=-486397924
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -24,8 +24,9 @@ Category=_ 0
 LoggingEnabled=_ 0
 LogFile=_ ""
 [Breakpoints]
-Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\common\cc2540\OnBoard.c}.334.3" 1 0 0 0 "" 0 ""
-Count=1
+Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_led.c}.583.3" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\..\Components\hal\target\CC2540EB\hal_dma.c}.119.3" 1 0 0 0 "" 0 ""
+Count=2
 [ChipconEmu]
 Stop timers on halt=0
 Leave target running=1

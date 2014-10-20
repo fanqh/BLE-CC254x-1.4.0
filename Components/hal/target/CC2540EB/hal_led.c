@@ -48,10 +48,7 @@
 #include "hal_led.h"
 #include "osal.h"
 #include "hal_board.h"
-
-#ifdef MINISCAN
-    #include "iic.h"
-#endif
+ #include "iic.h"
 /***************************************************************************************************
  *                                              TYPEDEFS
  ***************************************************************************************************/
@@ -99,6 +96,47 @@ void HalLedOnOff (uint8 leds, uint8 mode);
 /***************************************************************************************************
  *                                            FUNCTIONS - API
  ***************************************************************************************************/
+
+
+void HAL_TURN_OFF_LED_GREEN(void)  
+{
+  uint8 state; 
+  IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  
+  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, BV(2)|state);
+}
+void HAL_TURN_ON_LED_GREEN(void)   
+{
+  uint8 state; 
+  IICread(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, &state, 1);  
+  IICwrite0(SLAVE_DEVICE_ADDR, GPIO_SSC_BASE, (~BV(2)) & state);
+}
+
+
+void  HAL_TURN_OFF_LED_BLUE(void )
+{
+  LED_BLUE_SBIT = LED_BLUE_POLARITY (0); 
+}
+void  HAL_TURN_ON_LED_BLUE(void)
+{
+  LED_BLUE_SBIT = LED_BLUE_POLARITY (1); 
+}
+void HAL_TOGGLE_LED_BLUE(void )         
+{
+  if (LED_BLUE_SBIT) 
+  {
+      LED_BLUE_SBIT = 0; 
+  } 
+  else 
+  {
+    LED_BLUE_SBIT = 1;
+  } 
+}
+uint8 HAL_STATE_LED_BLUE(void )
+{
+  return LED_BLUE_POLARITY (LED_BLUE_SBIT);
+}
+
+
 
 /***************************************************************************************************
  * @fn      HalLedInit
@@ -212,6 +250,8 @@ uint8 HalLedSet (uint8 leds, uint8 mode)
 #endif /* BLINK_LEDS && HAL_LED   */
 
   return ( HalLedState );
+  
+
 }
 
 /***************************************************************************************************
@@ -229,6 +269,7 @@ uint8 HalLedSet (uint8 leds, uint8 mode)
  ***************************************************************************************************/
 void HalLedBlink (uint8 leds, uint8 numBlinks, uint8 percent, uint16 period)
 {
+  
 #if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
   uint8 led;
   HalLedControl_t *sts;
@@ -284,6 +325,9 @@ void HalLedBlink (uint8 leds, uint8 numBlinks, uint8 percent, uint16 period)
   (void) percent;
   (void) period;
 #endif /* BLINK_LEDS && HAL_LED */
+  
+  
+
 }
 
 #if (HAL_LED == TRUE)
@@ -298,6 +342,9 @@ void HalLedBlink (uint8 leds, uint8 numBlinks, uint8 percent, uint16 period)
  ***************************************************************************************************/
 void HalLedUpdate (void)
 {
+  
+  
+
   uint8 led;
   uint8 pct;
   uint8 leds;
@@ -380,6 +427,9 @@ void HalLedUpdate (void)
       osal_start_timerEx(Hal_TaskID, HAL_LED_BLINK_EVENT, next);   /* Schedule event */
     }
   }
+  
+  
+
 }
 
 /***************************************************************************************************
@@ -394,6 +444,8 @@ void HalLedUpdate (void)
  ***************************************************************************************************/
 void HalLedOnOff (uint8 leds, uint8 mode)
 {
+  
+
   if (leds & HAL_LED_1)
   {
     if (mode == HAL_LED_MODE_ON)
@@ -441,6 +493,32 @@ void HalLedOnOff (uint8 leds, uint8 mode)
       HAL_TURN_OFF_LED_WARM();
     }
   }
+  
+  
+  if (leds & HAL_LED_5)
+  {
+    if (mode == HAL_LED_MODE_ON)
+    {
+      HAL_TURN_ON_BUZZ();
+    }
+    else
+    {
+      HAL_TURN_OFF_BUZZ();
+    }
+  }
+  
+  
+    if (leds & HAL_LED_6)
+  {
+    if (mode == HAL_LED_MODE_ON)
+    {
+      HAL_TURN_ON_MOTOR();
+    }
+    else
+    {
+      HAL_TURN_OFF_MOTOR();
+    }
+  }
 
   /* Remember current state */
   if (mode)
@@ -451,6 +529,8 @@ void HalLedOnOff (uint8 leds, uint8 mode)
   {
     HalLedState &= (leds ^ 0xFF);
   }
+  
+
 }
 #endif /* HAL_LED */
 
@@ -483,6 +563,9 @@ uint8 HalLedGetState ()
  ***************************************************************************************************/
 void HalLedEnterSleep( void )
 {
+
+  
+  
 #ifdef BLINK_LEDS
   /* Sleep ON */
   HalLedStatusControl.sleepActive = TRUE;
@@ -499,6 +582,9 @@ void HalLedEnterSleep( void )
   /* TURN OFF all LEDs to save power */
   HalLedOnOff (HAL_LED_ALL, HAL_LED_MODE_OFF);
 #endif /* HAL_LED */
+  
+  
+
 
 }
 
@@ -513,6 +599,9 @@ void HalLedEnterSleep( void )
  ***************************************************************************************************/
 void HalLedExitSleep( void )
 {
+  
+  
+
 #if (HAL_LED == TRUE)
   /* Load back the saved state */
   HalLedOnOff(HalSleepLedState, HAL_LED_MODE_ON);
@@ -525,6 +614,8 @@ void HalLedExitSleep( void )
   /* Sleep OFF */
   HalLedStatusControl.sleepActive = FALSE;
 #endif /* BLINK_LEDS */
+  
+
 }
 
 /***************************************************************************************************

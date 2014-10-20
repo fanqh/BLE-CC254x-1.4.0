@@ -74,11 +74,11 @@ extern "C"
 #define HAL_LED_5     HAL_BUZZ
 #define HAL_LED_6     HAL_MOTOR 
 
-#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4)
+//#define HAL_LED_ALL   (HAL_LED_1 | HAL_LED_2 | HAL_LED_3 | HAL_LED_4)
   
 
 
-//#define HAL_LED_ALL   (HAL_LED_BLUE | HAL_LED_GREEN | HAL_LED_RED | HAL_LED_WARM | HAL_BUZZ | HAL_MOTOR)
+#define HAL_LED_ALL   (HAL_LED_BLUE | HAL_LED_GREEN | HAL_LED_RED | HAL_LED_WARM | HAL_BUZZ | HAL_MOTOR)
   
 
 /* Modes */
@@ -89,7 +89,7 @@ extern "C"
 #define HAL_LED_MODE_TOGGLE  0x08
 
 /* Defaults */
-#define HAL_LED_DEFAULT_MAX_LEDS      4
+#define HAL_LED_DEFAULT_MAX_LEDS      6
 #define HAL_LED_DEFAULT_DUTY_CYCLE    5
 #define HAL_LED_DEFAULT_FLASH_COUNT   50
 #define HAL_LED_DEFAULT_FLASH_TIME    1000
@@ -132,6 +132,8 @@ extern void HalLedExitSleep( void );
  * Return LED state
  */
 extern uint8 HalLedGetState ( void );
+
+extern void HAL_TURN_ON_LED_BLUE(void);
 
 /*********************************************************************
 *********************************************************************/

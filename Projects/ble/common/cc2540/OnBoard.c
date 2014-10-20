@@ -52,10 +52,13 @@
 #include "hal_drivers.h"
 #include "hal_board_cfg.h"
 #include "hal_adc.h"
+#include "hal_uart.h"
  
 #include "hal_led.h"
  #include "iic.h"
  #include "tps65721.h"
+#include "simpleBLEPeripheral.h"
+
 
 /*********************************************************************
  * MACROS
@@ -68,7 +71,7 @@
 // Task ID not initialized
 #define NO_TASK_ID 0xFF
 #define ACTIVING_TIMEOUT  100
-
+#define DEACTIVE_TIMEOUT   1000 
 /*********************************************************************
  * TYPEDEFS
  */
@@ -133,6 +136,10 @@ void HalPowerLongFun(void);
 // Registered keys task ID, initialized to NOT USED.
 static uint8 registeredKeysTaskID = NO_TASK_ID;
 
+static halUARTCfg_t uartConfig;
+
+barcode_t scan;
+
 /*********************************************************************
  * @fn      InitBoard()
  * @brief   Initialize the CC2540DB Board Peripherals
@@ -140,7 +147,37 @@ static uint8 registeredKeysTaskID = NO_TASK_ID;
  * @return  None
  */
 
-  uint8 state = 0;
+static void uartCB(uint8 port, uint8 event) 
+{
+
+  bool success;
+  uint16 len, l;
+  uint8 buff[DATA_LEN_MAX];
+  
+  scanner_scanning_state_exit();
+  scanner_ready_state_enter();
+  osal_stop_timerEx( Hal_TaskID, SCANNER_TIMEOUT_EVENT);
+  
+  len = Hal_UART_RxBufLen(HAL_UART_PORT_0);
+  if(len<=DATA_LEN_MAX)
+  {
+      HalLedBlink (HAL_BUZZ, 1, 50, 500);
+      l = HalUARTRead ( HAL_UART_PORT_0, buff, len );
+      success = barcode_fill_raw_bytes(&scan, buff, l);
+      if(success)
+      {
+         if(barcode_is_terminated(&scan))
+         {
+            scan.bHaveSend = true;
+            //SCAN_RESULT_MESSAGE
+            osal_set_event (simpleBLEPeripheral_TaskID, SCAN_RESULT_MESSAGE);
+         }
+      }
+
+  }
+  
+}
+
 void InitBoard( uint8 level )
 {
 
@@ -155,6 +192,18 @@ void InitBoard( uint8 level )
   }
   else  // !OB_COLD
   {
+    
+      uartConfig.configured = TRUE;
+      uartConfig.baudRate = HAL_UART_BR_9600;
+      uartConfig.flowControl = FALSE;
+      uartConfig.flowControlThreshold = 0;
+      uartConfig.rx.maxBufSize = 256;
+      uartConfig.tx.maxBufSize = 256;
+      uartConfig.idleTimeout = 6;
+      uartConfig.intEnable = TRUE;
+      uartConfig.callBackFunc = uartCB;
+      
+      HalUARTOpen(HAL_UART_PORT_0, &uartConfig);
     
     /* Initialize Key stuff */
     OnboardKeyIntEnable = HAL_KEY_INTERRUPT_ENABLE;
@@ -315,14 +364,13 @@ void OnBoard_KeyCallback ( uint8 keys, uint8 state )
         uint16 voltage;
          
         
-        
         voltage = HalAdcRead (7, HAL_ADC_RESOLUTION_8);
         {
         IICread(SLAVE_DEVICE_ADDR, CHGCONFIG1_BASE, &state, 1);
         }
-       // HAL_TURN_ON_LED_GREEN();
+        HAL_TURN_ON_LED_RED();
+       //HAL_TURN_ON_LED_BLUE();
         
-        HalLedBlink (HAL_LED_RED, 3, 50, 600);
         osal_set_event (Hal_TaskID, HAL_KEY_FUNCTION_EVENT);
        
     }
@@ -397,13 +445,6 @@ static void enablepower(void)
     P0_6 = 1;
 }
 
-static void hal_beep_turn_on(void)
-{}
-static void hal_moto_turn_on(void)
-{
-
-}
-
 void HalPowerReleaseFun(void)
 {}
 
@@ -418,6 +459,7 @@ void hal_initialising_state_enter(void)
     hal_state = initialising;
 	/** floating, if user release button and power cable unplugged, system stop **/
 	disablepower();	
+    scanner_ready_state_enter();
 }
 
 void HalGpioInit(void)
@@ -429,6 +471,12 @@ void HalGpioInit(void)
     
     /*SET GPIO AS INPUT*/
     P0DIR &= ~BV(4);
+    
+    SCAN_TRIG_SEL &= ~BV(0);
+    SCAN_TRIG_DDR |= BV(0);
+    SCAN_TRIG_SBIT = 1;
+    
+    
     
 }
 
@@ -467,20 +515,30 @@ void hal_activing_state_exit(void)
 void hal_activing_state_enter(void)
 {
     hal_state = activing;
-    hal_beep_turn_on();
-    hal_moto_turn_on();
+    HalLedBlink (HAL_BUZZ, 2, 50, 500);
+    HalLedBlink (HAL_MOTOR, 2, 50, 500);
     enablepower();
+    
+    HalLedBlink (HAL_LED_BLUE, 0, 50, 500);
     /**have a time if timeout is arrived , active in enter */
     osal_start_timerEx( Hal_TaskID, HAL_ACTIVING_TIMEOUT, ACTIVING_TIMEOUT );
 }
 
 void hal_active_state_enter(void)
-{}
+{
+  osal_start_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT,  AUTO_SHUTDOWN_TIMEOUT);  //10MIN
+}
 void hal_active_state_exit(void)
-{}
+{
+  osal_stop_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT );
+}
 
 void hal_deactive_state_enter(void)
-{}
+{
+     HalLedBlink (HAL_BUZZ, 2, 60, 300);
+     osal_start_timerEx( Hal_TaskID, HAL_DEACTIVE_TIMEOUT, DEACTIVE_TIMEOUT );
+     osal_set_event (simpleBLEPeripheral_TaskID, HAL_MESSAGE_SWITCCH_OFF);
+}
 void hal_deactive_state_exit(void)
 {}
 

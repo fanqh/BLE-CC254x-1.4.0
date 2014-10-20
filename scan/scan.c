@@ -21,7 +21,7 @@ uint8 RegisterForScanner( uint8 task_id )
     return ( FALSE );
 }
 
-void ready_state_enter(void) 
+void scanner_ready_state_enter(void) 
 {
   
     scanner_state = SCANNER_READY;
@@ -29,13 +29,13 @@ void ready_state_enter(void)
 	
 }
 
-void ready_state_exit(void) 
+void scanner_ready_state_exit(void) 
 {
     scanner_state = SCANNER_INVALID;
 }
 
 
-void scanning_state_enter(void) 
+void scanner_scanning_state_enter(void) 
 {
    
     scanner_state = SCANNER_SCANNING;
@@ -43,7 +43,7 @@ void scanning_state_enter(void)
     osal_start_timerEx( registeredScannerTaskID, SCANNER_TIMEOUT_EVENT, 3000);
 }
 
-void scanning_state_exit(void) 
+void scanner_scanning_state_exit(void) 
 {
     HAL_SCAN_DISABLE();  
   
@@ -86,7 +86,7 @@ static bool fill_byte(barcode_t* bcode, uint8 chr)
 	uint16 len = bcode ->length;
 	
 	/** if overflow, refuse **/
-	if ( len >= MAXIMUM_BARCODE_LENGTH ) 
+	if ( len >= DATA_LEN_MAX ) 
         {
 		
 		return FALSE;
@@ -152,7 +152,7 @@ bool barcode_fill_raw_bytes(barcode_t* bcode, const uint8* src, uint16 len) {
 		return TRUE;
 	}
 	
-	if (bcode ->length + len > MAXIMUM_BARCODE_LENGTH) {
+	if (bcode ->length + len > DATA_LEN_MAX) {
 		
 		return FALSE;
 	}
@@ -176,7 +176,7 @@ void barcode_clear(barcode_t* bcode) {
 		
 		bcode ->length = 0;
 		
-		for (i = 0; i < MAXIMUM_BARCODE_LENGTH; i++) {
+		for (i = 0; i < DATA_LEN_MAX; i++) {
 			
 			bcode ->code[i] = 0;
 		}

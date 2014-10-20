@@ -1,0 +1,9 @@
+1. 指示灯blink之未完，灯就熄灭，因进入了sleep模式，不知道为什么
+2. 这两个函数的作用，没弄明白
+  // Enable stack to toggle bypass control on TPS62730 (DC/DC converter)
+  HCI_EXT_MapPmIoPortCmd( HCI_EXT_PM_IO_PORT_P0, HCI_EXT_PM_IO_PORT_PIN7 );
+  // Enable clock divide on halt
+  // This reduces active current while radio is active and CC254x MCU
+  // is halted
+  HCI_EXT_ClkDivOnHaltCmd( HCI_EXT_ENABLE_CLK_DIVIDE_ON_HALT );
+2.串口查询怎么解决

@@ -75,9 +75,8 @@
    
 #include "Onboard.h"
 #include "simpleBLEPeripheral.h"
+#include "scan.h"
 
-
-#define AUTO_SHUTDOWN_TIMEOUT 600000  //10MIN
 /**************************************************************************************************
  *                                      GLOBAL VARIABLES
  **************************************************************************************************/
@@ -101,6 +100,7 @@ void Hal_Init( uint8 task_id )
   /* Register task ID */
   Hal_TaskID = task_id;
 
+  RegisterForScanner( Hal_TaskID );
 #ifdef CC2591_COMPRESSION_WORKAROUND
   osal_start_reload_timer( Hal_TaskID, PERIOD_RSSI_RESET_EVT, PERIOD_RSSI_RESET_TIMEOUT );
 #endif
@@ -222,27 +222,27 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
 #endif
   
   
-       if (events & HAL_KEY_EVENT)
-       {
+  if (events & HAL_KEY_EVENT)
+  {
        #if (defined HAL_KEY) && (HAL_KEY == TRUE)
             /* Check for keys */
-            HalKeyPoll();
-
-            /* if interrupt disabled, do next polling */
-            if (!Hal_KeyIntEnable)
+     HalKeyPoll();
+      /* if interrupt disabled, do next polling */
+     if (!Hal_KeyIntEnable)
               
-            {
-                PowerKeyHoldTimeCount();
-                osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100);
-            }
+     {   
+          if ((P0 &  BV(5)))
+          {
+              PowerKeyHoldTimeCount();
+          }
+          osal_start_timerEx( Hal_TaskID, HAL_KEY_EVENT, 100);
+     }
       #endif
-            return events ^ HAL_KEY_EVENT;
-       }
+    return events ^ HAL_KEY_EVENT;
+  }
 /*****************************************************************************/
  //sample battery voltage and updata led
 /*****************************************************************************/
-
-
     switch(hal_state)
     {
     case initialising:
@@ -262,6 +262,12 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
           hal_set_state(activing);
 
           return events ^ HAL_KEY_SHORT_EVENT;
+        }
+        if(events & SCANNER_TIMEOUT_EVENT)
+        {
+            scanner_scanning_state_exit();
+            scanner_ready_state_enter();
+            return (events ^ SCANNER_TIMEOUT_EVENT);
         }
          
       break;
@@ -287,10 +293,12 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
         {
             hal_set_state(active);
             
+            HalLedBlink (HAL_BUZZ, 1, 50, 100);
+            
             osal_set_event( simpleBLEPeripheral_TaskID, HAL_MESSAGE_SWITCH_ON );
             return events ^ HAL_KEY_LONG_EVENT;
         }
-      break;
+        break;
       
   
     case active :
@@ -314,7 +322,9 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
         }
         if(events & HAL_KEY_FUNCTION_EVENT)
         {
-          osal_set_event (simpleBLEPeripheral_TaskID, HAL_KEY_FUNCTION_EVENT);
+          //osal_set_event (simpleBLEPeripheral_TaskID, HAL_KEY_FUNCTION_EVENT);
+          scanner_ready_state_exit();
+          scanner_scanning_state_enter();
           
           osal_stop_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT );
           osal_start_timerEx( Hal_TaskID, HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT,  AUTO_SHUTDOWN_TIMEOUT);  //10MIN
@@ -326,23 +336,52 @@ uint16 Hal_ProcessEvent( uint8 task_id, uint16 events )
           hal_set_state(deactive);
           return events ^ HAL_ACTIVE_AUTO_SHUTDOWN_TIMEOUT;
         }
+        if(events & HAL_KEY_LONG_EVENT)
+        {
+            hal_set_state(active);
+            
+            osal_set_event( simpleBLEPeripheral_TaskID, HAL_MESSAGE_SWITCH_ON );
+            return events ^ HAL_KEY_LONG_EVENT;
+        }
+        if(events & SCANNER_TIMEOUT_EVENT)
+        {
+            scanner_scanning_state_exit();
+            scanner_ready_state_enter();
+            return (events ^ SCANNER_TIMEOUT_EVENT);
+        }
+
         break;
         
     case deactive:
+      ///JUST FOR DEBUG
+        if ( events & HAL_LED_BLINK_EVENT )
+        {   
+            uint16 voltage;
+            
+            voltage = HalAdcRead (7, HAL_ADC_DEC_512);
+#if (defined (BLINK_LEDS)) && (HAL_LED == TRUE)
+            HalLedUpdate();
+#endif /* BLINK_LEDS && HAL_LED */
+            return events ^ HAL_LED_BLINK_EVENT;
+        }
+        
+        if(events & HAL_DEACTIVE_TIMEOUT)
+        {
+            HalLedBlink (HAL_LED_BLUE, 1, 50, 500);
+            return events ^ HAL_DEACTIVE_TIMEOUT;
+        }
+        if(events & SCANNER_TIMEOUT_EVENT)
+        {
+            scanner_scanning_state_exit();
+            scanner_ready_state_enter();
+            return (events ^ SCANNER_TIMEOUT_EVENT);
+        }
       
         break;
         
     default :
       break;
-      
-        
-    
-  
     }
-  
-  
-
-
 #if defined POWER_SAVING
   if ( events & HAL_SLEEP_TIMER_EVENT )
   {

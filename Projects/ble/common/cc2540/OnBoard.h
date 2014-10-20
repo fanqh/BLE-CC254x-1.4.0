@@ -44,7 +44,7 @@
 #include "hal_mcu.h"
 #include "hal_sleep.h"
 #include "osal.h"
-
+#include "scan.h"
 /*********************************************************************
  */
 // Internal (MCU) RAM addresses
@@ -140,9 +140,6 @@ extern void _itoa(uint16 num, uint8 *buf, uint8 radix);
 /* used by MTEL.c */
 uint8 OnBoard_SendKeys( uint8 keys, uint8 state );
 
-
-
-
 typedef enum 
 {
     initialising,
@@ -188,6 +185,9 @@ extern void OnBoard_KeyCallback ( uint8 keys, uint8 state );
  * Perform a soft reset - jump to 0x0
  */
 extern __near_func void Onboard_soft_reset( void );
+
+
+extern barcode_t scan;
 
 extern hal_state_t hal_state;
 void HalGpioInit(void);

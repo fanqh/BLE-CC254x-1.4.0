@@ -50,6 +50,7 @@
 #include "hal_led.h"
 #include "hal_key.h"
 #include "hal_lcd.h"
+#include "hal_drivers.h"
 
 #include "gatt.h"
 
@@ -74,6 +75,9 @@
   #include "oad.h"
   #include "oad_target.h"
 #endif
+
+#include <string.h>
+#include "scan.h"
 
 /*********************************************************************
  * MACROS
@@ -123,10 +127,15 @@
 
 // Length of bd addr as a string
 #define B_ADDR_STR_LEN                        15
+   
+#define ADVER_TIMEOUT  9000
 
 /*********************************************************************
  * TYPEDEFS
  */
+
+
+
 
 /*********************************************************************
  * GLOBAL VARIABLES
@@ -143,7 +152,15 @@
 /*********************************************************************
  * LOCAL VARIABLES
  */
+
+
+   
+//form_t form;
+//ble_data_t BleToSend;
+
 uint8 simpleBLEPeripheral_TaskID;   // Task ID for internal task/event processing
+form_t window;
+attribute_t attribute[WINDOW_SIZE];
 
 static gaprole_States_t gapProfileState = GAPROLE_INIT;
 
@@ -151,40 +168,40 @@ static gaprole_States_t gapProfileState = GAPROLE_INIT;
 static uint8 scanRspData[] =
 {
   // complete name
-  0x14,   // length of this data
+  0x09,   // length of this data
   GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-  0x53,   // 'S'
-  0x69,   // 'i'
-  0x6d,   // 'm'
-  0x70,   // 'p'
-  0x6c,   // 'l'
-  0x65,   // 'e'
-  0x42,   // 'B'
-  0x4c,   // 'L'
-  0x45,   // 'E'
-  0x50,   // 'P'
-  0x65,   // 'e'
-  0x72,   // 'r'
-  0x69,   // 'i'
-  0x70,   // 'p'
-  0x68,   // 'h'
-  0x65,   // 'e'
-  0x72,   // 'r'
-  0x61,   // 'a'
-  0x6c,   // 'l'
-
+  0x41,   // 'A'
+  0x63,   // 'c'
+  0x74,   // 't'
+  0x6e,   // 'n'
+  0x6f,   // '0'
+  0x76,   // 'v'
+  0x61,   // 'A'
+  0x32,   // '2'
+//  0x45,   // 'E'
+//  0x50,   // 'P'
+//  0x65,   // 'e'
+//  0x72,   // 'r'
+//  0x69,   // 'i'
+//  0x70,   // 'p'
+//  0x68,   // 'h'
+//  0x65,   // 'e'
+//  0x72,   // 'r'
+//  0x61,   // 'a'
+//  0x6c,   // 'l'
+  
   // connection interval range
   0x05,   // length of this data
   GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE,
   LO_UINT16( DEFAULT_DESIRED_MIN_CONN_INTERVAL ),   // 100ms
-  HI_UINT16( DEFAULT_DESIRED_MIN_CONN_INTERVAL ),
+  HI_UINT16( DEFAULT_DESIRED_MIN_CONN_INTERVAL ),  
   LO_UINT16( DEFAULT_DESIRED_MAX_CONN_INTERVAL ),   // 1s
-  HI_UINT16( DEFAULT_DESIRED_MAX_CONN_INTERVAL ),
+  HI_UINT16( DEFAULT_DESIRED_MAX_CONN_INTERVAL ),  
 
   // Tx power level
   0x02,   // length of this data
   GAP_ADTYPE_POWER_LEVEL,
-  0       // 0dBm
+  0       // 0dBm  
 };
 
 // GAP - Advertisement data (max size = 31 bytes, though this is
@@ -283,7 +300,7 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
       uint8 initial_advertising_enable = FALSE;
     #else
       // For other hardware platforms, device starts advertising upon initialization
-      uint8 initial_advertising_enable = TRUE;
+      uint8 initial_advertising_enable = FALSE;
     #endif
 
     // By setting this to zero, the device will go into the waiting state after
@@ -362,35 +379,6 @@ void SimpleBLEPeripheral_Init( uint8 task_id )
   }
 
 
-#if defined( CC2540_MINIDK )
-
-  SK_AddService( GATT_ALL_SERVICES ); // Simple Keys Profile
-
-  // Register for all key events - This app will handle all key events
-  RegisterForKeys( simpleBLEPeripheral_TaskID );
-
-  // makes sure LEDs are off
-  HalLedSet( (HAL_LED_1 | HAL_LED_2), HAL_LED_MODE_OFF );
-
-  // For keyfob board set GPIO pins into a power-optimized state
-  // Note that there is still some leakage current from the buzzer,
-  // accelerometer, LEDs, and buttons on the PCB.
-
-  P0SEL = 0; // Configure Port 0 as GPIO
-  P1SEL = 0; // Configure Port 1 as GPIO
-  P2SEL = 0; // Configure Port 2 as GPIO
-
-  P0DIR = 0xFC; // Port 0 pins P0.0 and P0.1 as input (buttons),
-                // all others (P0.2-P0.7) as output
-  P1DIR = 0xFF; // All port 1 pins (P1.0-P1.7) as output
-  P2DIR = 0x1F; // All port 1 pins (P2.0-P2.4) as output
-
-  P0 = 0x03; // All pins on port 0 to low except for P0.0 and P0.1 (buttons)
-  P1 = 0;   // All pins on port 1 to low
-  P2 = 0;   // All pins on port 2 to low
-
-#endif // #if defined( CC2540_MINIDK )
-
 #if (defined HAL_LCD) && (HAL_LCD == TRUE)
 
 #if defined FEATURE_OAD
@@ -458,21 +446,123 @@ uint16 SimpleBLEPeripheral_ProcessEvent( uint8 task_id, uint16 events )
     // return unprocessed events
     return (events ^ SYS_EVENT_MSG);
   }
-
-  if ( events & SBP_START_DEVICE_EVT )
+  switch(gapProfileState)
   {
-    // Start the Device
-    VOID GAPRole_StartDevice( &simpleBLEPeripheral_PeripheralCBs );
+  case GAPROLE_INIT:
+    
+      if ( events & SBP_START_DEVICE_EVT )
+      {
+        // Start the Device
+        VOID GAPRole_StartDevice( &simpleBLEPeripheral_PeripheralCBs );
 
-    // Start Bond Manager
-    VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
+        // Start Bond Manager
+        VOID GAPBondMgr_Register( &simpleBLEPeripheral_BondMgrCBs );
 
-    // Set timer for first periodic event
-    osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
+        // Set timer for first periodic event
+        //osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_PERIODIC_EVT, SBP_PERIODIC_EVT_PERIOD );
 
-    return ( events ^ SBP_START_DEVICE_EVT );
-  }
+        return ( events ^ SBP_START_DEVICE_EVT );
+      }
+        break;
+      
+  case GAPROLE_STARTED:
+    if(events & HAL_MESSAGE_SWITCH_ON)
+    {
+       // Setup the GAP Peripheral Role Profile
+      {
+          // For other hardware platforms, device starts advertising upon initialization
+        uint8 initial_advertising_enable = TRUE;
+        
+        osal_stop_timerEx( simpleBLEPeripheral_TaskID,  SBP_ADVER_TIMEOUT_EVT );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, SBP_ADVER_TIMEOUT_EVT,  ADVER_TIMEOUT);  
+        // Set the GAP Role Parameters
+        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
+        
+         return ( events ^ HAL_MESSAGE_SWITCH_ON );
+      }
+    }
+    break;
+  case GAPROLE_ADVERTISING:
+    
+    if(events & SBP_ADVER_TIMEOUT_EVT)
+    {
+        uint8 initial_advertising_enable = FALSE;
+        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
+        return ( events ^ SBP_ADVER_TIMEOUT_EVT );
+        
+    }
+    if(events & HAL_MESSAGE_SWITCCH_OFF)
+    {
+        uint8 initial_advertising_enable = FALSE;
+        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );
+        return ( events ^ SBP_ADVER_TIMEOUT_EVT );
+    }
+    
+    break;
+  case GAPROLE_WAITING:
+    break;
+  case GAPROLE_WAITING_AFTER_TIMEOUT :
+    break;
+  case GAPROLE_CONNECTED:
+    if(events & HAL_MESSAGE_SWITCCH_OFF)
+    {
+        uint8 initial_advertising_enable = TRUE;
+        GAPRole_TerminateConnection();
+        GAPRole_SetParameter( GAPROLE_ADVERT_ENABLED, sizeof( uint8 ), &initial_advertising_enable );     
 
+        return ( events ^ SBP_ADVER_TIMEOUT_EVT );
+    }
+    if(events & SCAN_RESULT_MESSAGE)
+    {   
+        scan.bHaveSend = false;
+        BLESend(scan.code, scan.length);
+        return (events ^ SCAN_RESULT_MESSAGE);
+    }
+    if(events & SBP_TIMEOUT0_EVT)
+    {
+      if(attribute[0].sendcount<SENDCOUNT_MAX)
+      {
+          attribute[0].sendcount++;
+          osal_stop_timerEx( simpleBLEPeripheral_TaskID,  attribute[0].frame.seq & 0xFFFF );
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, attribute[0].frame.seq & 0xFFFF,  SEND_TIMEOUT);  //1MIN 
+          SimpleProfile_SetParameter( SIMPLEPROFILE_CHAR1, attribute[0].frame.size, (uint8*)&attribute[0].frame );
+      }
+      return (events ^ SBP_TIMEOUT0_EVT);
+    }
+    if(events & SBP_TIMEOUT1_EVT)
+    {
+      if(attribute[1].sendcount<SENDCOUNT_MAX)
+      {     
+          attribute[1].sendcount++;  
+          osal_stop_timerEx( simpleBLEPeripheral_TaskID,  attribute[0].frame.seq & 0xFFFF );
+          osal_start_timerEx( simpleBLEPeripheral_TaskID, attribute[0].frame.seq & 0xFFFF,  SEND_TIMEOUT);  //1MIN 
+          SimpleProfile_SetParameter( SIMPLEPROFILE_CHAR1, attribute[1].frame.size, (uint8*)&attribute[0].frame );
+      }
+      return (events ^ SBP_TIMEOUT1_EVT);
+     
+    } 
+    if(events & SBP_TIMEOUT2_EVT)
+    {
+      if(attribute[2].sendcount<SENDCOUNT_MAX)
+      {
+        attribute[2].sendcount++;
+        osal_stop_timerEx( simpleBLEPeripheral_TaskID,  attribute[window.ss].frame.seq & 0xFFFF );
+        osal_start_timerEx( simpleBLEPeripheral_TaskID, attribute[window.ss].frame.seq & 0xFFFF,  SEND_TIMEOUT);  //1MIN 
+        SimpleProfile_SetParameter( SIMPLEPROFILE_CHAR1, attribute[2].frame.size, (uint8*)&attribute[0].frame );
+      }
+      return (events ^ SBP_TIMEOUT2_EVT);
+    }
+    
+    break;
+  case GAPROLE_CONNECTED_ADV:
+    break;
+  case GAPROLE_ERROR:
+    break;
+      
+  default :
+        break;
+  }  
+  
   if ( events & SBP_PERIODIC_EVT )
   {
     // Restart timer
@@ -632,6 +722,9 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
 
     case GAPROLE_ADVERTISING:
       {
+        
+        HalLedBlink (HAL_LED_BLUE, 0, 50, 100);
+        
         #if (defined HAL_LCD) && (HAL_LCD == TRUE)
           HalLcdWriteString( "Advertising",  HAL_LCD_LINE_3 );
         #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
@@ -639,7 +732,10 @@ static void peripheralStateNotificationCB( gaprole_States_t newState )
       break;
 
     case GAPROLE_CONNECTED:
-      {        
+      {   
+        
+         HalLedBlink (HAL_LED_BLUE, 0, 20, 600);
+         
         #if (defined HAL_LCD) && (HAL_LCD == TRUE)
           HalLcdWriteString( "Connected",  HAL_LCD_LINE_3 );
         #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
@@ -820,6 +916,224 @@ char *bdAddr2Str( uint8 *pAddr )
   return str;
 }
 #endif // (defined HAL_LCD) && (HAL_LCD == TRUE)
+
+
+
+/************************************************************************
+*application write for scan
+*
+*************************************************************************/
+//form_t form;
+//ble_data_t BleToSend;
+//typedef struct
+//{
+//    uint8 Sf;
+//    uint8 Ss;
+//    uint8 Sn;
+//    uint8 size;
+//}form_t
+
+//#define UUID_MAX         7  
+//#define BUFF_MAX         UUID_MAX
+//#define UUID_BASE        0xFF00
+//typedef
+//{   
+//    uint16  RepeatCount;
+//    uint16  data[BUFF_LEN_MAX];
+//    
+//}copy_data_t
+//
+//
+//typedef enum
+//{
+//     ACK = 0;
+//     NCK;
+//}type_t
+//
+//typedef
+//{
+//   type_t type;
+//   uint16 seq;
+//}respond_t 
+//
+//void FormInit(void)
+//{
+//    form.Sf = form.Ss = 0;
+//    form.size =  BUFF_MAX ;
+//    form.Sn = form.Sf + BUFF_MAX;
+//}
+//
+//ble_data_t copydata[BUFF_MAX];
+//
+//
+//int between(unsigned char a,unsigned char b,unsigned char c)	//判断b是否在（a,c）
+//{
+//	if(((a<=b)&&(b<c))||((c<a)&&(a<=b))||((b<c)&&(c<a)))
+//		return 1;
+//	else
+//		return 0;
+//}
+//
+//
+//
+//
+//
+//
+//void BLESendData(uint8 *pcode, uint16 len)
+//{   
+//    uint8 n , i, l *p;
+//    uint16 remain;
+//    
+//    p = pcode;
+//    remain = len;
+//    n = len / BUFF_LEN_MAX;
+//    
+//    if( between(form.Ss + n) )
+//    {   
+//        for(i=0; (i< n)&&(remain > 0); i++)
+//        {
+//              if( remain >= BUFF_LEN_MAX ) 
+//              {
+//                l = BUFF_LEN_MAX;
+//              } 
+//              else
+//                l = remian;
+//   
+//              memcpy(copydata[Ss].data, p, l);
+//              SimpleProfile_SetParameter( UUID_BASE + (Ss%(UUID_MAX+1)), l, copydata[Sn].data );             
+//              Ss=(Ss + 1) % UUID_MAX;
+//              
+//              p += l;
+//              remain -= l;
+//        }
+//    }
+//    else
+//    {
+//        //等待重新发送
+//    }
+//}
+//
+//void ProcessAckNo(respond_t respond)
+//{
+//    if(between(form.Sf , respond.seq, form.Sn))
+//    {
+//        if(respond.type == ACK)
+//        {
+//             form.Sf = respond.seq;
+//             form.Sn = (form.Sf + form.size ) % (UUID_MAX+1)
+//        }
+//        else
+//        {
+//          //重新发送
+//        }
+//    }
+//}
+
+
+
+
+static int between(unsigned char a,unsigned char b,unsigned char c)	//判断b是否在（a,c）
+{
+	if(((a<=b)&&(b<=c))||((c<a)&&(a<=b))||((b<=c)&&(c<a)))
+		return 1;
+	else
+		return 0;
+}
+void WindowInit(void)
+{
+      window.sf = window.ss = 0;
+      window.size = WINDOW_SIZE ;
+      window.sn = (window.size + window.sf) % WINDOW_SIZE;
+}
+void BLESend(uint8 *p, uint16 len)
+{      
+      if(between(window.sf, window.ss+1, window.sn)&&(len<=DATA_LEN_MAX))
+      {       
+              attribute[window.ss].sendcount = 1;
+              attribute[window.ss].frame.size = len  + 2;
+              attribute[window.ss].frame.seq = window.ss;
+              memcpy(attribute[window.ss].frame.data, p, len);
+              SimpleProfile_SetParameter( (uint16)window.ss&0xffff, attribute[window.ss].frame.size, &attribute[window.ss].frame );
+              window.ss = (window.ss +1) % WINDOW_SIZE ;
+              
+              osal_stop_timerEx( simpleBLEPeripheral_TaskID,  attribute[window.ss].frame.seq & 0xFFFF );
+              osal_start_timerEx( simpleBLEPeripheral_TaskID, attribute[window.ss].frame.seq & 0xFFFF,  1000);  //1MIN 
+      }
+}
+void ProcessACK(ackornak_t  a)
+{
+    if(between( window.sf, a.seq, window.sn))
+    {
+     if(a.type==ACK)
+     {
+            window.sf = a.seq;
+            window.sn = (window.sf + window.size) % WINDOW_SIZE;
+            osal_stop_timerEx( simpleBLEPeripheral_TaskID,  (uint16)a.seq & 0xFFFF );
+     }
+     else if(a.type==NAK)
+     {     
+            if(attribute[window.ss].sendcount<3)
+            {       
+                  attribute[window.ss].sendcount++;
+                  SimpleProfile_SetParameter( (uint16)window.ss&0xffff, attribute[window.ss].frame.size, &attribute[a.seq].frame );
+            }
+     }
+     else
+     {
+      HalLedBlink (HAL_BUZZ, 3, 50, 100); /// FOR DEBUG
+     }
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////
+
+
+
+//void BLESend(uint8 *data; uint16 len)
+//{
+//      uint8 i;
+//      uint8 n;
+//      uint16 remain, n;
+//      uint8 *p;
+//      
+//      p = data;
+//      remian = len;
+//      n = len / DATA_LEN_MAX;
+//      
+//      if( (n< WINDOW_SIZE-1)&&() )
+//      do{
+//          if(remian>=DATA_LEN_MAX)
+//            n = DATA_LEN_MAX;
+//          else
+//            n = remain;
+//          
+//        
+//      }while((n--))
+//      
+//      if(between(window.sf, window.ss+1, window.fn))
+//      {       
+//              attribute[window.ss].sendcount = 1;
+//              attribute[window.ss].frame.size = len  + 2;
+//              attribute[window.ss].frame.seq = ss;
+//              memcpy(attribute[ss].frame.data, p, len);
+//              SimpleProfile_SetParameter( SIMPLEPROFILE_CHAR2, attribute.frame.size, &attribute[ss].frame );
+//              window.ss = (window.ss +1) % WINDOW_SIZE ;
+//              
+//              osal_stop_timerEx( simpleBLEPeripheral_TaskID,  attribute[window.ss].seq & 0xFFFF );
+//              osal_start_timerEx( simpleBLEPeripheral_TaskID, attribute[window.ss].seq & 0xFFFF,  1000);  //10MIN
+//                    
+//      }
+//}
+
+
+
+
+
+
+
+
+
 
 /*********************************************************************
 *********************************************************************/
